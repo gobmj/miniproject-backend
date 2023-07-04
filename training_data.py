@@ -2,6 +2,7 @@ import cv2, os, sys
 import numpy as np
 import face_detect as face_detect
 
+
 def training_data(data_folder):
     dirs = os.listdir(data_folder)
     faces = []
@@ -20,5 +21,5 @@ def training_data(data_folder):
             if face is not None:
                 faces.append(face[0])
                 labels.append(label)
-                
+
     return faces, labels
