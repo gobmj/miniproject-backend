@@ -75,6 +75,8 @@ def detect_face():
     for name in recognized_names:
         recognized_students_ref.add({'name': name})
 
+    #camera.release()
+
     # Return a response to the React application
     response = {'message': 'Successful'}
     return jsonify(response), 200
