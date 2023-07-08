@@ -16,13 +16,15 @@ camera.set(3, 800)  # Set width
 camera.set(4, 600)  # Set height
 
 # Initialize Firebase
-cred = credentials.Certificate('mini-project-5efef-firebase-adminsdk-bdapf-2c93bf270f.json')  # Replace with the path to your service account key
+cred = credentials.Certificate('mini-project-5efef-firebase-adminsdk-bdapf-a93a767794.json')  # Replace with the path to your service account key
 firebase_admin.initialize_app(cred)
 
 # Load training data from Firebase
 db = firestore.client()
 training_data_ref = db.collection('Students')
 training_data_docs = training_data_ref.get()
+
+recognized_students_ids = []
 
 faces = []
 labels = []
@@ -60,6 +62,8 @@ def detect_face():
         response = {'message': 'Failed to capture image'}
         return jsonify(response), 500
 
+    recognized_students_ids = []
+
     # Convert image to grayscale
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -70,15 +74,18 @@ def detect_face():
     recognized_names = [get_label_name(label) for label in label_directories]
     print("Recognized faces =", recognized_names)
 
-    # Store the recognized names in Firebase
+    # Store the recognized names in Firebase with document IDs
     recognized_students_ref = db.collection('recognized_students')
     for name in recognized_names:
-        recognized_students_ref.add({'name': name})
+        student_docs = training_data_ref.where('firstName', '==', name).get()
+        for doc in student_docs:
+            recognized_students_ref.add({'name': name})
+            recognized_students_ids.append(doc.id)
 
     #camera.release()
 
-    # Return a response to the React application
-    response = {'message': 'Successful'}
+    # Return the recognized student document IDs as JSON
+    response = {'recognized_students_ids': recognized_students_ids}
     return jsonify(response), 200
 
 

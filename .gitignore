@@ -1,0 +1,5 @@
+# Ignore venv
+venv/
+
+# Ignore JSON certificate
+mini-project-5efef-firebase-adminsdk-bdapf-a93a767794.json
