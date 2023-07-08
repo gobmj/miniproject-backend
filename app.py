@@ -5,7 +5,7 @@ import face_detect
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import firestore, auth
 import urllib.request
 
 app = Flask(__name__)
@@ -96,6 +96,17 @@ def get_label_name(label):
         data = doc.to_dict()
         return data['firstName']
     return 'Unknown'  # Return 'Unknown' if no matching label is found
+
+@app.route('/api/delete-user', methods=['POST'])
+def delete_user():
+    user_id = request.json['userId']
+    try:
+        auth.delete_user(user_id)
+        response = {'message': 'User deleted successfully'}
+        return jsonify(response), 200
+    except firebase_admin.auth.FirebaseAuthError as e:
+        response = {'error': str(e)}
+        return jsonify(response), 500
 
 
 if __name__ == '__main__':
