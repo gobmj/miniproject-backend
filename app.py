@@ -71,13 +71,13 @@ def detect_face():
     faces, label_directories = face_detect.predict(gray_image)
 
     # Display the recognized label names
-    recognized_names = [get_label_name(label) for label in label_directories]
+    recognized_names = [get_label_name(label, class_id) for label in label_directories]
     print("Recognized faces =", recognized_names)
 
     # Store the recognized names in Firebase with document IDs
     recognized_students_ref = db.collection('recognized_students')
     for name in recognized_names:
-        student_docs = training_data_ref.where('firstName', '==', name).get()
+        student_docs = training_data_ref.where('firstName', '==', name).where('classId', '==', class_id).get()
         for doc in student_docs:
             recognized_students_ref.add({'name': name})
             recognized_students_ids.append(doc.id)
@@ -89,9 +89,9 @@ def detect_face():
     return jsonify(response), 200
 
 
-def get_label_name(label):
+def get_label_name(label, class_id):
     # Retrieve the label name based on the label value from the Students collection
-    student_docs = training_data_ref.where('firstName', '==', label_ids[label]).get()
+    student_docs = training_data_ref.where('firstName', '==', label_ids[label]).where('classId', '==', class_id).get()
     for doc in student_docs:
         data = doc.to_dict()
         return data['firstName']
@@ -110,4 +110,4 @@ def delete_user():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="172.24.82.226", port=5000)
