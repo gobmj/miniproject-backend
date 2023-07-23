@@ -16,7 +16,7 @@ camera.set(3, 800)  # Set width
 camera.set(4, 600)  # Set height
 
 # Initialize Firebase
-cred = credentials.Certificate('mini-project-5efef-firebase-adminsdk-bdapf-a93a767794.json')  # Replace with the path to your service account key
+cred = credentials.Certificate('mini-project2-1a7d2-firebase-adminsdk-1b242-f4793204eb.json')  # Replace with the path to your service account key
 firebase_admin.initialize_app(cred)
 
 # Load training data from Firebase
@@ -85,8 +85,8 @@ def detect_face():
     #camera.release()
 
     # Return the recognized student document IDs as JSON
-    response = {'recognized_students_ids': recognized_students_ids}
-    return jsonify(response), 200
+    # response = {student_ids=recognized_students_ids}
+    return jsonify(student_ids=recognized_students_ids), 200 
 
 
 def get_label_name(label):
@@ -110,4 +110,4 @@ def delete_user():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="10.147.18.240", port=5000)
