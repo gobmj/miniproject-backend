@@ -7,6 +7,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore, auth
 import urllib.request
+import face_detect
 
 app = Flask(__name__)
 CORS(app)
@@ -62,16 +63,23 @@ def detect_face():
         response = {'message': 'Failed to capture image'}
         return jsonify(response), 500
 
-    recognized_students_ids = []
+    # Convert image to BGR format (if not already)
+    if len(frame.shape) == 2:
+        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
     # Convert image to grayscale
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Perform face detection and recognition
-    faces, label_directories = face_detect.predict(gray_image)
+    recognized_faces, label_directories = face_detect.predict(gray_image, face_recognizer, label_ids)
+
+    # Check if faces are detected
+    if not recognized_faces:
+        response = {'message': 'No faces detected'}
+        return jsonify(response), 404
 
     # Display the recognized label names
-    recognized_names = [get_label_name(label, class_id) for label in label_directories]
+    recognized_names = [get_label_name(label, class_id) if label is not None else 'Unknown' for label in label_directories]
     print("Recognized faces =", recognized_names)
 
     # Store the recognized names in Firebase with document IDs
@@ -82,12 +90,8 @@ def detect_face():
             recognized_students_ref.add({'name': name})
             recognized_students_ids.append(doc.id)
 
-    #camera.release()
-
     # Return the recognized student document IDs as JSON
-    # response = {'recognized_students_ids': recognized_students_ids}
-    return jsonify(student_ids=recognized_students_ids), 200    
-
+    return jsonify(student_ids=recognized_students_ids), 200
 
 def get_label_name(label, class_id):
     # Retrieve the label name based on the label value from the Students collection
@@ -110,4 +114,4 @@ def delete_user():
 
 
 if __name__ == '__main__':
-    app.run(host="10.147.18.240",port=5000)
+    app.run()
