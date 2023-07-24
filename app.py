@@ -177,7 +177,7 @@ def detect_face():
     print('Class ID:', class_id)
 
     # Provide the path of the image in your local machine for testing
-    image_path = r'C:\Users\govin\Downloads\pics(0)\test.png'
+    image_path = r'E:\mini_pro\miniproject-backend\test.png'
 
     # Read the image from the local machine
     image = cv2.imread(image_path)
