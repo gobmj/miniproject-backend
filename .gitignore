@@ -2,4 +2,8 @@
 venv/
 
 # Ignore JSON certificate
-mini-project-5efef-firebase-adminsdk-bdapf-a93a767794.json
+mini-project2-1a7d2-firebase-adminsdk-1b242-f44442856b.json
+
+# Ignore testing images
+test.png
+test1.png

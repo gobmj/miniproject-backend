@@ -176,8 +176,10 @@ def detect_face():
     class_id = request.json['classId']
     print('Class ID:', class_id)
 
+    image_path = r'"C:\Users\govin\OneDrive\Pictures\Camera Roll\WIN_20230723_11_39_30_Pro.jpg"'
+
     # Provide the path of the image in your local machine for testing
-    image_path = r'E:\mini_pro\miniproject-backend\test.png'
+    # image_path = r'E:\mini_pro\miniproject-backend\test.png'
 
     # Read the image from the local machine
     image = cv2.imread(image_path)
